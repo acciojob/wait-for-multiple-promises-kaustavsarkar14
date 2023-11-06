@@ -1,5 +1,5 @@
 //your JS code here. If required.
-const table = document.querySelector('.table')
+const table = document.querySelector('#output')
 const p1 = new Promise((res)=>{
 	setTimeout(()=>{
 		res(["Promise 1",1000])
@@ -18,6 +18,7 @@ const p3 = new Promise((res)=>{
 
 async function addTableRow() {
 	Promise.all([p1, p2, p3]).then((resolvedData)=>{
+		loading.style.display = "none"
 		resolvedData.map(data=>{
 			appendData(data[0], data[1])
 		})
