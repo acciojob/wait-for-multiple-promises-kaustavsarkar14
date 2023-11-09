@@ -1,41 +1,50 @@
-//your JS code here. If required.
-const table = document.querySelector('#output')
-const p1 = new Promise((res)=>{
-	setTimeout(()=>{
-		res(["Promise 1",1000])
-	},1000)
-})
-const p2 = new Promise((res)=>{
-	setTimeout(()=>{
-		res(["Promise 2",2000])
-	},2000)
-})
-const p3 = new Promise((res)=>{
-	setTimeout(()=>{
-		res(["Promise 3",3000])
-	},3000)
-})
 
-async function addTableRow() {
-	Promise.all([p1, p2, p3]).then((resolvedData)=>{
-		loading.style.display = "none"
-		resolvedData.map(data=>{
-			appendData(data[0], data[1])
-		})
-	appendData("Total", 3000)
-	}) 
-	
-}
+    function getRandomTime() {
+        return Math.floor(Math.random() * 3000) + 1000;
+    }
 
-addTableRow()
+    function createPromise(number) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(number);
+            }, getRandomTime());
+        });
+    }
 
-function appendData(promiseName, promiseTime) {
-	const name = document.createElement('td')
-	const time = document.createElement('td')
-	const tr = document.createElement('tr')
-	name.innerText = promiseName
-	time.innerText = promiseTime
-	tr.appendChild(name)
-	tr.appendChild(time)
-	table.appendChild(tr)
-}
+    const promises = [
+        createPromise(1),
+        createPromise(2),
+        createPromise(3)
+    ];
+
+    Promise.all(promises)
+        .then(results => {
+            const outputTable = document.getElementById('output');
+            const loadingRow = document.getElementById('loading');
+            loadingRow.remove();
+
+            for (let i = 0; i < promises.length; i++) {
+                const newRow = document.createElement('tr');
+                const promiseNameCell = document.createElement('td');
+                const timeTakenCell = document.createElement('td');
+
+                promiseNameCell.textContent = `Promise ${i + 1}`;
+                timeTakenCell.textContent = (results[i] / 1000).toFixed(3);
+
+                newRow.appendChild(promiseNameCell);
+                newRow.appendChild(timeTakenCell);
+                outputTable.appendChild(newRow);
+            }
+
+            const totalTime = (results.reduce((acc, time) => acc + time, 0) / 1000).toFixed(3);
+            const totalRow = document.createElement('tr');
+            const totalNameCell = document.createElement('td');
+            const totalTimeTakenCell = document.createElement('td');
+
+            totalNameCell.textContent = 'Total';
+            totalTimeTakenCell.textContent = totalTime;
+
+            totalRow.appendChild(totalNameCell);
+            totalRow.appendChild(totalTimeTakenCell);
+            outputTable.appendChild(totalRow);
+        });
